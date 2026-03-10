@@ -21,7 +21,7 @@ from verl.single_controller.ray.base import (
     RayClassWithInitArgs,
     RayResourcePool,
     RayWorkerGroup,
-    create_colocated_worker_cls_fused,
+    create_colocated_worker_cls,
 )
 from verl.utils.device import get_device_name
 
@@ -68,7 +68,7 @@ def test_colocated_workers_fused():
 
     # create colocated workers
     cls_dict = {"actor": actor_cls, "critic": critic_cls}
-    ray_cls_with_init = create_colocated_worker_cls_fused(cls_dict)
+    ray_cls_with_init = create_colocated_worker_cls(cls_dict)
     wg_dict = RayWorkerGroup(
         resource_pool=resource_pool, ray_cls_with_init=ray_cls_with_init, device_name=get_device_name()
     )

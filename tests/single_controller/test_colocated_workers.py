@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import asyncio
+
 import ray
 
 from verl import DataProto
@@ -49,9 +51,7 @@ class Critic(Worker):
         return data
 
 
-def test_colocated_workers():
-    ray.init()
-
+async def _test_colocated_workers():
     import torch
 
     data = DataProto.from_dict({"a": torch.zeros(10)})
@@ -64,7 +64,7 @@ def test_colocated_workers():
     critic_wg = RayWorkerGroup(resource_pool=resource_pool, ray_cls_with_init=critic_cls, device_name=get_device_name())
 
     expected_actor_output = actor_wg.add(data)
-    expected_critic_output = critic_wg.sub(data)
+    expected_critic_output = await critic_wg.sub(data)
 
     # create colocated workers
     cls_dict = {"actor": actor_cls, "critic": critic_cls}
@@ -78,9 +78,13 @@ def test_colocated_workers():
     colocated_critic_wg = spawn_wg["critic"]
 
     actor_output = colocated_actor_wg.add(data)
-    critic_output = colocated_critic_wg.sub(data)
+    critic_output = await colocated_critic_wg.sub(data)
 
     torch.testing.assert_close(expected_actor_output.batch, actor_output.batch, atol=0, rtol=0)
     torch.testing.assert_close(expected_critic_output.batch, critic_output.batch, atol=0, rtol=0)
 
+
+def test_colocated_workers():
+    ray.init()
+    asyncio.run(_test_colocated_workers())
     ray.shutdown()

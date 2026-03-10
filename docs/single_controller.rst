@@ -23,7 +23,7 @@ The ``single_controller`` module originated from a request I received —
 to adapt a toy single-process RLHF script into a distributed system with
 minimal changes, while maintaining ease of debugging.
 
-Common practice — such as using PyTorch’s Distributed Data Parallel
+Common practice — such as using PyTorch's Distributed Data Parallel
 (DDP) — typically involves wrapping ``nn.Module`` and launching multiple
 processes that execute the same function under different ranks. However,
 this approach presents two main limitations in the context of
@@ -36,18 +36,18 @@ the training loop into well-defined stages like ``generate_sequences``,
 
 We selected `Ray <https://www.ray.io/>`__ as the initial backend for
 ``verl`` due to its ability to expose Python class methods as RPC
-endpoints. However, Ray’s default model only supports **one method call,
+endpoints. However, Ray's default model only supports **one method call,
 one RPC**, while training LLMs typically requires coordination across
 multiple processes.
 
 To hide this multi-Ray actors invocation for a single method from users,
 we introduced the following components:
 
--  ``WorkerGroup`` – manages a group of remote workers and provides
+-  ``WorkerGroup`` - manages a group of remote workers and provides
    a unified interface for multi-process distributed computation;
--  ``ResourcePool`` – binds computational resources to worker
+-  ``ResourcePool`` - binds computational resources to worker
    processes;
--  ``ClassWithArgs`` – enables delayed remote instantiation with
+-  ``ClassWithArgs`` - enables delayed remote instantiation with
    specified initialization arguments.
 
 --------------
@@ -80,7 +80,7 @@ with ``@register`` as it will be called in driver script.
            ...
 
 The ``@register`` decorator adds metadata to the ``generate_sequences``
-method. Currently, it doesn’t alter functionality, but attaches
+method. Currently, it doesn't alter functionality, but attaches
 attributes via a magic key (``MAGIC_ATTR``):
 
 **Source:**

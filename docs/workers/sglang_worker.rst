@@ -98,7 +98,7 @@ Why might there be inconsistent GPU memory?
 
 **1. Ray Distributed Actor loads the model at different times**
 
-``verl`` uses Ray-based multi-process, multi-GPU concurrent training. Each ``WorkerDict`` may be called at different times:
+``verl`` uses Ray-based multi-process, multi-GPU concurrent training. Each worker may be called at different times:
 
 .. code-block:: python
 

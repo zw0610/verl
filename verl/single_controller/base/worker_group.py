@@ -15,6 +15,7 @@
 the class of WorkerGroup
 """
 
+import inspect
 import logging
 import signal
 import threading
@@ -236,7 +237,8 @@ class WorkerGroup:
                     print(f"execute_fn {wg_execute_fn_name} is invalid")
                     raise
 
-                # bind a new method to the RayWorkerGroup
+                # bind a new method to the WorkerGroup
+                is_async = inspect.iscoroutinefunction(method)
                 func = func_generator(
                     self,
                     method_name,
@@ -244,6 +246,7 @@ class WorkerGroup:
                     collect_fn=collect_fn,
                     execute_fn=execute_fn,
                     blocking=blocking,
+                    is_async=is_async,
                 )
 
                 try:

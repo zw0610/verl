@@ -71,8 +71,8 @@ CUDA/distributed context in different processes.
    # See TODO(url) for more information.
    all_wg = {}
    for resource_pool, class_dict in self.resource_pool_to_cls.items():
-       worker_dict_cls = create_colocated_worker_cls(class_dict=class_dict)
-       wg_dict = self.ray_worker_group_cls(resource_pool=resource_pool, ray_cls_with_init=worker_dict_cls)
+       colocated_cls = create_colocated_worker_cls(class_dict=class_dict)
+       wg_dict = self.ray_worker_group_cls(resource_pool=resource_pool, ray_cls_with_init=colocated_cls)
        spawn_wg = wg_dict.spawn(prefix_set=class_dict.keys())
        all_wg.update(spawn_wg)
 
